@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:roqqu_task/domain/model/candle_model.dart' as domain;
 import 'package:roqqu_task/presentation/tabs/charts_tab.dart';
 import 'package:roqqu_task/presentation/tabs/order_book.dart';
 

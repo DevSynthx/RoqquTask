@@ -30,4 +30,5 @@ abstract class AppColors {
   static const receivedColor = Color(0xFF39B259);
   static const cardPurpleColor = Color(0xFFF1ECF8);
   static const textField = Color(0xFFE7E6EA);
+  static const depositColor = Color(0xFF2764FF);
 }

@@ -33,16 +33,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        SvgPicture.asset(
+        Image.asset(
           AppImage.avatar,
-          height: 25,
+          height: 30,
         ),
         Space(10),
-        SvgPicture.asset(AppImage.globe),
+        SvgPicture.asset(AppImage.globe, height: 30),
         Space(10),
         SvgPicture.asset(
           AppImage.menu,
-          height: 25,
+          height: 30,
         ),
         Space(10),
       ],

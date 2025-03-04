@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:roqqu_task/core/extension/currency_extension.dart';
+import 'package:roqqu_task/presentation/components/app_image.dart';
 import 'package:roqqu_task/presentation/provider/market_data_provider.dart';
 import 'package:roqqu_task/presentation/utils/app_spacer.dart';
 import 'package:roqqu_task/presentation/utils/loading_view.dart';
@@ -20,26 +21,15 @@ class _PricesViewState extends ConsumerState<PricesView> {
     final tickerAsync = ref.watch(tickerProvider);
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
           Row(
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Colors.amber,
-                    child: Text('₿',
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ),
-                  const CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Colors.green,
-                    child: Text('\$',
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ),
-                  const SizedBox(width: 8),
+                  SvgPicture.asset(AppImage.cyptoIcon),
+                  const Space(8),
                   const Text(
                     'BTC/USDT',
                     style: TextStyle(
@@ -47,7 +37,8 @@ class _PricesViewState extends ConsumerState<PricesView> {
                       fontSize: 16,
                     ),
                   ),
-                  const Icon(Icons.keyboard_arrow_down, size: 16),
+                  const Space(8),
+                  const Icon(Icons.keyboard_arrow_down, size: 20),
                 ],
               ),
               Space(20),
@@ -108,7 +99,8 @@ class _PricesViewState extends ConsumerState<PricesView> {
               count: 3,
               height: 50,
             ),
-          )
+          ),
+          const Space(10),
         ],
       ),
     );
@@ -140,7 +132,7 @@ class PriceWidget extends StatelessWidget {
             Icon(icon, size: 14, color: Colors.grey),
             const SizedBox(width: 4),
             Text(
-              '24h Low',
+              title,
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.bold,

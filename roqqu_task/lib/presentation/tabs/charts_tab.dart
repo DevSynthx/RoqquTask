@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interactive_chart/interactive_chart.dart';
-import 'package:intl/intl.dart';
 import 'package:roqqu_task/core/extension/currency_extension.dart';
 import 'package:roqqu_task/presentation/provider/candle_stick_data_provider.dart';
 import 'package:roqqu_task/domain/model/candle_model.dart' as domain;
@@ -29,21 +27,8 @@ class CandleChart extends ConsumerWidget {
                 final sortedCandles = List<domain.Candle>.from(candles)
                   ..sort((a, b) => a.time.compareTo(b.time));
 
-                List<CandleData> result = sortedCandles
-                    .map((candle) => CandleData(
-                          timestamp: candle.time.weekday,
-                          open: candle.open,
-                          close: candle.close,
-                          volume: candle.volume,
-                          high: candle.high,
-                          low: candle.low,
-                        ))
-                    .toList();
-
                 return Column(
                   children: [
-                    //InteractiveChart(candles: result),
-
                     SfCartesianChart(
                       primaryXAxis: DateTimeAxis(),
                       primaryYAxis: NumericAxis(),
@@ -210,8 +195,16 @@ class VolumeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (candles.isEmpty) {
+      return const Center(
+        child: Text('No data available',
+            style: TextStyle(fontSize: 12, color: Colors.grey)),
+      );
+    }
+
     final maxVolume = candles.fold<double>(
         0, (max, candle) => candle.volume > max ? candle.volume : max);
+
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -227,7 +220,7 @@ class VolumeView extends ConsumerWidget {
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
               const SizedBox(width: 4),
               Text(
-                candles.last.volume.toCompact(),
+                candles.isNotEmpty ? candles.last.volume.toCompact() : '0',
                 style: const TextStyle(fontSize: 12),
               ),
               const SizedBox(width: 16),
@@ -235,7 +228,9 @@ class VolumeView extends ConsumerWidget {
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
               const SizedBox(width: 4),
               Text(
-                (candles.last.volume * candles.last.close).toCompact(),
+                candles.isNotEmpty
+                    ? (candles.last.volume * candles.last.close).toCompact()
+                    : '0',
                 style: const TextStyle(fontSize: 12),
               ),
             ],
@@ -245,9 +240,10 @@ class VolumeView extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(
-                maxVolume > 0 ? 20 : 0, // Show 20 volume bars if we have data
+                candles.isNotEmpty
+                    ? 20
+                    : 0, // Ensure we only generate bars if we have data
                 (index) {
-                  // Get volume for this bar, descending from right to left
                   final dataIndex = candles.length - 20 + index;
                   if (dataIndex < 0 || dataIndex >= candles.length) {
                     return Expanded(child: Container());
@@ -257,7 +253,6 @@ class VolumeView extends ConsumerWidget {
                   final isGreen =
                       candles[dataIndex].close >= candles[dataIndex].open;
 
-                  // Calculate height as percentage of max volume
                   final height = maxVolume > 0 ? (volume / maxVolume * 60) : 0;
 
                   return Expanded(
