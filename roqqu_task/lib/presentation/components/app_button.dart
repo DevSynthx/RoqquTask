@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:roqqu_task/app/theme/app_color.dart';
+import 'package:roqqu_task/app/app_color.dart';
 
 class AppButton extends StatelessWidget {
   final String? title;

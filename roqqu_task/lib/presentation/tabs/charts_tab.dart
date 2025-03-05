@@ -5,6 +5,7 @@ import 'package:roqqu_task/core/extension/currency_extension.dart';
 import 'package:roqqu_task/presentation/provider/candle_stick_data_provider.dart';
 import 'package:roqqu_task/domain/model/candle_model.dart' as domain;
 import 'package:roqqu_task/presentation/provider/market_data_provider.dart';
+import 'package:roqqu_task/presentation/utils/app_spacer.dart';
 import 'package:roqqu_task/presentation/utils/loading_view.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -145,12 +146,12 @@ class _TimeIntervalViewState extends ConsumerState<TimeIntervalView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
+      height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           const Text('Time', style: TextStyle(color: Colors.grey)),
-          const SizedBox(width: 16),
+          const Space(16),
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,

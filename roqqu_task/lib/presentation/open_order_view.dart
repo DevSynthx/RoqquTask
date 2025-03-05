@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roqqu_task/app/app_color.dart';
+import 'package:roqqu_task/app/theme/app_theme.dart';
 import 'package:roqqu_task/presentation/components/app_button.dart';
 import 'package:roqqu_task/presentation/components/custom_tabbar.dart';
 import 'package:roqqu_task/presentation/utils/app_bottomsheet.dart';
@@ -33,7 +35,7 @@ class _OpenOrderViewState extends State<OpenOrderView>
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Container(
-      color: Colors.white,
+      color: context.isDark ? AppColors.containerColor : Colors.white,
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Column(
         children: [
@@ -103,7 +105,7 @@ class BuyAndSellButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: context.isDark ? AppColors.containerColor : Colors.white,
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -170,6 +172,7 @@ class _OrderFormState extends State<OrderForm>
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context);
     return Container(
+      color: context.isDark ? AppColors.containerColor : Colors.white,
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
         padding: deviceWidth.viewInsets,

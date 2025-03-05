@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roqqu_task/app/app_color.dart';
+import 'package:roqqu_task/app/theme/app_theme.dart';
 import 'package:roqqu_task/presentation/tabs/charts_tab.dart';
 import 'package:roqqu_task/presentation/tabs/order_book.dart';
 
@@ -31,7 +33,7 @@ class _CandleViewState extends ConsumerState<CandleView>
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Container(
-      color: Colors.white,
+      color: context.isDark ? AppColors.containerColor : Colors.white,
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [

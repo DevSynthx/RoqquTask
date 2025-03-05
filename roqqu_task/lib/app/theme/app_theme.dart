@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:roqqu_task/app/theme/app_color.dart';
+import 'package:roqqu_task/app/app_color.dart';
 
+//border: 1px solid #262932
 const Color _kPrimaryLightColor = AppColors.primaryColor;
-const Color _kPrimaryDarkColor = AppColors.ngnGreen;
-const Color _kBackgroundDarkColor = Color(0xFF010101);
+const Color _kPrimaryDarkColor = Colors.white;
+const Color _kBackgroundDarkColor = Color(0xFF262932);
 const Color _kBackgroundWhiteColor = Colors.white;
+
+const Color _scaffoldBackgroundDarkColor = Color(0xFF262932);
+Color _scaffoldBackgroundlightColor = Colors.grey.shade200;
 const double _kIconSize = 20.0;
-const String kAppPrimaryFontFamily = 'Roboto';
+const String kAppPrimaryFontFamily = 'Satoshi';
 
 class AppColorTheme {
   const AppColorTheme._();
+}
+
+extension ThemeContextExtension on BuildContext {
+  bool get isDark => Theme.of(this).brightness == Brightness.dark;
 }
 
 class AppTheme extends ThemeExtension<AppTheme> {
@@ -45,21 +53,24 @@ ThemeData themeBuilder(
   );
 
   final Color scaffoldBackgroundColor =
-      isDark ? _kBackgroundDarkColor : colorScheme.surface;
+      isDark ? _scaffoldBackgroundDarkColor : _scaffoldBackgroundlightColor;
 
   //Style TextInput Color
-  const UnderlineInputBorder textFieldBorder = UnderlineInputBorder(
+  const OutlineInputBorder textFieldBorder = OutlineInputBorder(
     borderSide: BorderSide.none,
   );
-  final UnderlineInputBorder textFieldErrorBorder = textFieldBorder.copyWith(
+  final OutlineInputBorder textFieldErrorBorder = textFieldBorder.copyWith(
+      borderRadius: BorderRadius.circular(10),
       borderSide: const BorderSide(width: 0.5, color: AppColors.deleteColor));
 
   /// FocusedBorder
-  final UnderlineInputBorder focusedBorder = textFieldBorder.copyWith(
+  final OutlineInputBorder focusedBorder = textFieldBorder.copyWith(
+      borderRadius: BorderRadius.circular(10),
       borderSide: const BorderSide(width: 0.5, color: AppColors.primaryColor));
 
   /// disabledBorder
-  final UnderlineInputBorder disabledBorder = textFieldBorder.copyWith(
+  final OutlineInputBorder disabledBorder = textFieldBorder.copyWith(
+      borderRadius: BorderRadius.circular(10),
       borderSide: const BorderSide(width: 0.5, color: AppColors.textField));
 
   //Style Text textstyle
@@ -77,15 +88,6 @@ ThemeData themeBuilder(
         fontWeight: FontWeight.normal,
         letterSpacing: 0.0),
   );
-
-  //Searchbar theme
-  final searchBarTheme = defaultTheme.searchBarTheme.copyWith(
-      surfaceTintColor: WidgetStateProperty.all(Colors.transparent),
-      shadowColor: WidgetStateProperty.all(Colors.transparent),
-      overlayColor: WidgetStateProperty.all(Colors.transparent),
-      backgroundColor: WidgetStateProperty.all(Colors.transparent),
-      elevation: const WidgetStatePropertyAll(0),
-      textStyle: WidgetStatePropertyAll(textTheme.bodyMedium));
 
 //Style Card
   final CardThemeData cardTheme = defaultTheme.cardTheme.copyWith(
@@ -127,9 +129,6 @@ ThemeData themeBuilder(
     fontSize: 13,
     color: isDark ? Colors.black : _kBackgroundDarkColor,
   );
-  //Style Chip backgroundColor
-  final Color chipColor =
-      isDark ? colorScheme.onSurface : colorScheme.outline.withOpacity(0.1);
 
   return ThemeData(
     useMaterial3: true,
@@ -137,7 +136,6 @@ ThemeData themeBuilder(
     highlightColor: Colors.transparent,
     dialogBackgroundColor: Colors.white,
     dialogTheme: dialogTheme,
-    searchBarTheme: searchBarTheme,
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
       foregroundColor: Colors.transparent,
@@ -152,15 +150,11 @@ ThemeData themeBuilder(
     )),
     cardTheme: cardTheme,
     appBarTheme: appBarTheme,
-    chipTheme: defaultTheme.chipTheme
-        .copyWith(backgroundColor: chipColor, labelStyle: chipTextStyle),
     iconTheme: defaultTheme.iconTheme
         .copyWith(size: _kIconSize, color: AppColors.primaryColor),
-    //primaryIconTheme: defaultTheme.primaryIconTheme.copyWith(size: _kIconSize),
     textTheme: defaultTheme.textTheme.merge(textTheme),
     primaryTextTheme: defaultTheme.primaryTextTheme.merge(textTheme),
     shadowColor: colorScheme.scrim,
-
     primaryColor: AppColors.primaryColor,
     scaffoldBackgroundColor: scaffoldBackgroundColor,
     textButtonTheme: TextButtonThemeData(style: buttonStyle),
@@ -172,7 +166,6 @@ ThemeData themeBuilder(
       foregroundColor: colorScheme.onSurface,
     ),
     colorScheme: colorScheme,
-
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: hintTextStyle,
       labelStyle: hintTextStyle,

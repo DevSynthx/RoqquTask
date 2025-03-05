@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:roqqu_task/app/app_color.dart';
+import 'package:roqqu_task/app/theme/app_theme.dart';
 import 'package:roqqu_task/core/extension/currency_extension.dart';
 import 'package:roqqu_task/presentation/components/app_image.dart';
 import 'package:roqqu_task/presentation/provider/market_data_provider.dart';
@@ -20,7 +22,7 @@ class _PricesViewState extends ConsumerState<PricesView> {
   Widget build(BuildContext context) {
     final tickerAsync = ref.watch(tickerProvider);
     return Container(
-      color: Colors.white,
+      color: context.isDark ? AppColors.containerColor : Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
@@ -144,9 +146,7 @@ class PriceWidget extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: color ?? Colors.black),
+              fontWeight: FontWeight.bold, fontSize: 12, color: color),
         ),
       ],
     );

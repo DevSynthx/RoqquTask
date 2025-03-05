@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+//border: 1px solid #262932
+//background: #17181B;
+
 abstract class AppColors {
   static const primaryColor = Color(0xFF0C0531);
   static const secondaryColor = Color(0xFFFF6122);
@@ -11,19 +14,11 @@ abstract class AppColors {
   static const ngnGreen = Color(0xFF1F5F00);
   static const midGreen = Color(0xFF0C4132);
   static const scaffoldColor = Color(0xFFF4F4F4);
-  static const bgGreen = Color(0xFF001912);
-  static const bannerColor = Color(0xFFF79E1B);
 
   static const buttonColor = Color(0xFF64679C);
 
-  static final circleFlow = Colors.grey.shade200;
-
-  static const colorA = Color(0xFF27EF3B);
-  static const colorB = Color(0xFFF79E1B);
-
   static const grey = Color(0xFFF5F5F5);
-  static const greyTextColor = Color(0xFFADADAD);
-  static const cancelColor = Color(0xFF303030);
+  static const containerColor = Color(0xFF17181B);
   static const deleteColor = Color(0xFFDC1D1D);
   static const errorCard = Color(0xFFFCEDE9);
   static const withdrawColor = Color(0xFFE44F2F);

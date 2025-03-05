@@ -17,7 +17,6 @@ class _TradingScreenState extends ConsumerState<TradingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
       appBar: CustomAppBar(),
       body: Column(
         spacing: 10,
