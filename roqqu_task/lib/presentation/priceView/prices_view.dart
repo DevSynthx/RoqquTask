@@ -146,7 +146,7 @@ class PriceWidget extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 12, color: color),
+              fontWeight: FontWeight.bold, fontSize: 11, color: color),
         ),
       ],
     );

@@ -45,7 +45,9 @@ class DepositButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: const Text('Deposit'),
+        child: const Text(
+          'Deposit',
+        ),
       ),
     );
   }
@@ -98,7 +100,6 @@ class BtcGradientButton extends StatelessWidget {
               'Buy BTC',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
             ),

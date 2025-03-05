@@ -1,10 +1,8 @@
-// Provider for candles
 import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:roqqu_task/domain/model/candle_model.dart';
 import 'package:roqqu_task/domain/repository/binance_repo.dart';
-import 'package:roqqu_task/presentation/data_source_provider.dart';
+import 'package:roqqu_task/presentation/provider/data_source_provider.dart';
 import 'package:roqqu_task/presentation/provider/market_data_provider.dart';
 
 final candlesProvider =
@@ -19,6 +17,8 @@ class CandlesNotifier extends StateNotifier<AsyncValue<List<Candle>>> {
   final BinanceRepository repository;
   final MarketConfig config;
   StreamSubscription<Candle>? _subscription;
+  Timer? _loadingTimer;
+  bool _isDisposed = false;
 
   CandlesNotifier(this.repository, this.config)
       : super(const AsyncValue.loading()) {
@@ -26,29 +26,38 @@ class CandlesNotifier extends StateNotifier<AsyncValue<List<Candle>>> {
   }
 
   Future<void> _subscribeToStream() async {
-    // Cancel any existing subscription
     await _subscription?.cancel();
+    _loadingTimer?.cancel();
 
-    // Set loading state
     state = const AsyncValue.loading();
 
     try {
-      // Initialize with empty list
-      final List<Candle> candles = [];
-      state = AsyncValue.data(candles);
-
-      // Subscribe to stream
       _subscription =
           repository.getKlineStream(config.symbol, config.interval).listen(
         (candle) {
-          // Update state with new candle
-          state = AsyncValue.data(_updateCandlesList(candle));
+          if (_isDisposed) return;
+
+          if (state is AsyncLoading) {
+            state = AsyncValue.data([candle]);
+          } else {
+            state = AsyncValue.data(_updateCandlesList(candle));
+          }
         },
         onError: (error) {
+          if (_isDisposed) return;
           state = AsyncValue.error(error, StackTrace.current);
         },
       );
+
+      //-------> Set a timer to show empty state if no data arrives
+      _loadingTimer = Timer(const Duration(seconds: 10), () {
+        if (_isDisposed) return;
+        if (state is AsyncLoading) {
+          state = const AsyncValue.data([]);
+        }
+      });
     } catch (e) {
+      if (_isDisposed) return;
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
@@ -57,7 +66,6 @@ class CandlesNotifier extends StateNotifier<AsyncValue<List<Candle>>> {
     final currentCandles = state.value ?? [];
     final updatedList = List<Candle>.from(currentCandles);
 
-    // Find existing candle with the same timestamp
     final existingIndex = updatedList.indexWhere(
       (c) =>
           c.time.millisecondsSinceEpoch ==
@@ -65,27 +73,23 @@ class CandlesNotifier extends StateNotifier<AsyncValue<List<Candle>>> {
     );
 
     if (existingIndex >= 0) {
-      // Update existing candle
       updatedList[existingIndex] = newCandle;
     } else {
-      // Add new candle
       updatedList.add(newCandle);
-
-      // Keep only last 100 candles
       if (updatedList.length > 100) {
         updatedList.removeAt(0);
       }
     }
 
-    // Sort by time
     updatedList.sort((a, b) => a.time.compareTo(b.time));
-
     return updatedList;
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _subscription?.cancel();
+    _loadingTimer?.cancel();
     super.dispose();
   }
 }

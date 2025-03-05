@@ -27,11 +27,6 @@ class CryptoTradingApp extends StatelessWidget {
               return MaterialApp(
                 title: 'Crypto Trading App',
                 debugShowCheckedModeBanner: false,
-                // theme: ThemeData(
-                //   fontFamily: "Satoshi",
-                //   primarySwatch: Colors.blue,
-                //   scaffoldBackgroundColor: Colors.white,
-                // ),
                 theme: themeBuilder(ThemeData.light()),
                 darkTheme: themeBuilder(ThemeData.dark()),
                 themeMode: darkEnabled,

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:roqqu_task/app/app_color.dart';
+import 'package:roqqu_task/app/theme/app_theme.dart';
 import 'package:roqqu_task/domain/model/order_book_model.dart';
+import 'package:roqqu_task/presentation/components/app_image.dart';
 import 'package:roqqu_task/presentation/provider/market_data_provider.dart';
+import 'package:roqqu_task/presentation/utils/app_spacer.dart';
 
 class OrderBookScreen extends ConsumerWidget {
   const OrderBookScreen({super.key});
@@ -9,48 +14,45 @@ class OrderBookScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orderbookAsync = ref.watch(orderbookProvider);
-    final ticker = ref.watch(tickerProvider);
     final currentPrice = ref.watch(currentPriceProvider);
-    final priceChangePercent = ref.watch(priceChangePercentProvider);
 
     return Column(
       children: [
-        // View mode selector
+        Space(10),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                spacing: 20,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.table_rows_outlined, size: 20),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.view_week_outlined, size: 20),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.menu, size: 20),
-                    onPressed: () {},
-                  ),
+                  SvgPicture.asset(AppImage.stripeIcon),
+                  SvgPicture.asset(AppImage.stripeIcon),
+                  SvgPicture.asset(AppImage.stripeIcon),
                 ],
               ),
-              DropdownButton<String>(
-                value: '10',
-                items: const [
-                  DropdownMenuItem(value: '10', child: Text('10')),
-                  DropdownMenuItem(value: '20', child: Text('20')),
-                  DropdownMenuItem(value: '50', child: Text('50')),
-                ],
-                onChanged: (value) {},
-              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                decoration: BoxDecoration(
+                    color: context.isDark
+                        ? AppColors.scaffoldColor
+                        : Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(5)),
+                child: DropdownButton<String>(
+                  isDense: true,
+                  value: '10',
+                  items: const [
+                    DropdownMenuItem(value: '10', child: Text('10')),
+                    DropdownMenuItem(value: '20', child: Text('20')),
+                    DropdownMenuItem(value: '50', child: Text('50')),
+                  ],
+                  onChanged: (value) {},
+                ),
+              )
             ],
           ),
         ),
-
-        // Orderbook main view
         Expanded(
           child: orderbookAsync.when(
             data: (orderbook) => OrderBookViewx(
@@ -66,10 +68,8 @@ class OrderBookScreen extends ConsumerWidget {
     );
   }
 
-  // Helper method to convert API model to UI model
   List<OrderBookEntry> _convertToOrderBookEntries(
       List<OrderbookEntry> entries) {
-    // Calculate cumulative total for more accurate visualization
     double runningTotal = 0.0;
 
     return entries.map((entry) {
@@ -77,7 +77,7 @@ class OrderBookScreen extends ConsumerWidget {
       return OrderBookEntry(
         price: entry.price,
         amount: entry.amount,
-        total: runningTotal, // Using cumulative total
+        total: runningTotal,
       );
     }).toList();
   }
@@ -148,7 +148,7 @@ class OrderBookViewx extends StatelessWidget {
           ),
         ),
 
-        // Sell orders (displayed in reverse order - highest price at top)
+        //-------->  Sell orders
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.zero,
@@ -167,7 +167,7 @@ class OrderBookViewx extends StatelessWidget {
           ),
         ),
 
-        // Spread indicator
+        //--------> Spread indicator
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
@@ -198,7 +198,7 @@ class OrderBookViewx extends StatelessWidget {
           ),
         ),
 
-        // Buy orders
+        //--------> Buy orders
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.zero,
@@ -253,8 +253,6 @@ class OrderBookViewx extends StatelessWidget {
               ),
             ),
           ),
-
-          // Order details
           Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
             child: Row(
@@ -297,7 +295,6 @@ class OrderBookViewx extends StatelessWidget {
     );
   }
 
-  // Helper to determine the maximum amount for scaling the background bars
   double _getMaxAmount() {
     double maxBuy = buyOrders.isNotEmpty
         ? buyOrders.map((e) => e.amount).reduce((a, b) => a > b ? a : b)

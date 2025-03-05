@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:roqqu_task/core/extension/currency_extension.dart';
 import 'package:roqqu_task/presentation/provider/candle_stick_data_provider.dart';
 import 'package:roqqu_task/domain/model/candle_model.dart' as domain;
@@ -24,15 +28,28 @@ class CandleChart extends ConsumerWidget {
                 return const Center(child: Text('No chart data available'));
               }
               try {
-                // Ensure the candles are properly sorted by time (oldest to newest)
+                // -------> Ensures the candles are properly sorted by time (oldest to newest)
                 final sortedCandles = List<domain.Candle>.from(candles)
                   ..sort((a, b) => a.time.compareTo(b.time));
 
                 return Column(
                   children: [
                     SfCartesianChart(
-                      primaryXAxis: DateTimeAxis(),
-                      primaryYAxis: NumericAxis(),
+                      primaryXAxis: DateTimeAxis(
+                        labelStyle: TextStyle(fontSize: 10.sp),
+                        majorGridLines: const MajorGridLines(width: 0),
+                      ),
+                      primaryYAxis: NumericAxis(
+                        numberFormat: NumberFormat.currency(
+                          locale: 'en_US',
+                          symbol: '',
+                          decimalDigits: 2,
+                        ),
+                        opposedPosition: true,
+                        labelStyle: TextStyle(fontSize: 10.sp),
+                        labelPosition: ChartDataLabelPosition.outside,
+                        labelAlignment: LabelAlignment.center,
+                      ),
                       zoomPanBehavior: ZoomPanBehavior(
                         enablePinching: true,
                         enablePanning: true,
@@ -40,40 +57,39 @@ class CandleChart extends ConsumerWidget {
                       ),
                       series: <CandleSeries<domain.Candle, DateTime>>[
                         CandleSeries<domain.Candle, DateTime>(
-                          dataSource: sortedCandles,
-                          xValueMapper: (domain.Candle candle, _) =>
-                              candle.time,
-                          lowValueMapper: (domain.Candle candle, _) =>
-                              candle.low,
-                          highValueMapper: (domain.Candle candle, _) =>
-                              candle.high,
-                          openValueMapper: (domain.Candle candle, _) =>
-                              candle.open,
-                          closeValueMapper: (domain.Candle candle, _) =>
-                              candle.close,
-                          name: 'Price',
-                        )
+                            dataSource: sortedCandles,
+                            xValueMapper: (domain.Candle candle, _) =>
+                                candle.time,
+                            lowValueMapper: (domain.Candle candle, _) =>
+                                candle.low,
+                            highValueMapper: (domain.Candle candle, _) =>
+                                candle.high,
+                            openValueMapper: (domain.Candle candle, _) =>
+                                candle.open,
+                            closeValueMapper: (domain.Candle candle, _) =>
+                                candle.close,
+                            name: 'Price',
+                            borderRadius: BorderRadius.all(Radius.circular(10)))
                       ],
                       tooltipBehavior: TooltipBehavior(enable: true),
                     ),
-                    // _buildVolumeSection(sortedCandles),
                     const SizedBox(height: 16),
                   ],
                 );
               } catch (e) {
-                // Add error handling to help diagnose issues
-                print('Error rendering chart: $e');
+                log('Error rendering chart: $e');
                 return Center(child: Text('Error rendering chart: $e'));
               }
             },
             loading: () => SingleLoader(
-                  height: 300,
+                  height: 200,
                   width: double.infinity,
                 ),
             error: (error, stackTrace) {
               if (kDebugMode) {
-                return Center(
-                  child: Text('Error loading chart data: $error'),
+                return SingleLoader(
+                  height: 300,
+                  width: double.infinity,
                 );
               } else {
                 return SingleLoader();
@@ -89,8 +105,13 @@ class CandleChart extends ConsumerWidget {
             height: 100,
             width: double.infinity,
           ),
-          error: (error, stackTrace) => Center(
-            child: Text('Error loading chart data: $error'),
+          error: (error, stackTrace) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(),
+            ),
           ),
         )
       ],
@@ -107,7 +128,8 @@ class TimeIntervalView extends ConsumerStatefulWidget {
 
 class _TimeIntervalViewState extends ConsumerState<TimeIntervalView> {
   final List<String> _timeIntervals = ['1H', '2H', '4H', '1D', '1W', '1M'];
-  int _selectedTimeIntervalIndex = 3; // Default to 1D
+  int _selectedTimeIntervalIndex = 3;
+  bool _isUpdating = false;
 
   String _getIntervalFromIndex(int index) {
     switch (index) {
@@ -129,17 +151,29 @@ class _TimeIntervalViewState extends ConsumerState<TimeIntervalView> {
   }
 
   void _updateTimeInterval(int index) {
+    if (_isUpdating) return;
+
     if (_selectedTimeIntervalIndex != index) {
       setState(() {
         _selectedTimeIntervalIndex = index;
+        _isUpdating = true;
       });
 
-      // Update the market config with the new interval
+      //------> Update the market config with the new interval
       final currentConfig = ref.read(marketConfigProvider);
       ref.read(marketConfigProvider.notifier).state = MarketConfig(
         symbol: currentConfig.symbol,
         interval: _getIntervalFromIndex(index),
       );
+
+      //-------> Reset updating variable after a short delay
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          setState(() {
+            _isUpdating = false;
+          });
+        }
+      });
     }
   }
 
@@ -203,11 +237,12 @@ class VolumeView extends ConsumerWidget {
       );
     }
 
-    final maxVolume = candles.fold<double>(
-        0, (max, candle) => candle.volume > max ? candle.volume : max);
+    //---------->  Sort candles by time
+    final sortedCandles = List<domain.Candle>.from(candles)
+      ..sort((a, b) => a.time.compareTo(b.time));
 
     return Container(
-      height: 100,
+      height: 150,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -238,33 +273,31 @@ class VolumeView extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(
-                candles.isNotEmpty
-                    ? 20
-                    : 0, // Ensure we only generate bars if we have data
-                (index) {
-                  final dataIndex = candles.length - 20 + index;
-                  if (dataIndex < 0 || dataIndex >= candles.length) {
-                    return Expanded(child: Container());
-                  }
-
-                  final volume = candles[dataIndex].volume;
-                  final isGreen =
-                      candles[dataIndex].close >= candles[dataIndex].open;
-
-                  final height = maxVolume > 0 ? (volume / maxVolume * 60) : 0;
-
-                  return Expanded(
-                    child: Container(
-                      height: height.toDouble(),
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      color: isGreen ? Colors.green : Colors.red,
-                    ),
-                  );
-                },
+            child: SfCartesianChart(
+              margin: EdgeInsets.zero,
+              primaryXAxis: DateTimeAxis(
+                dateFormat: DateFormat('MMM dd HH:mm'),
+                labelStyle: const TextStyle(fontSize: 10),
+                majorGridLines: const MajorGridLines(width: 0),
+                axisLine: const AxisLine(width: 0),
+                labelIntersectAction: AxisLabelIntersectAction.hide,
+                interval: 5,
               ),
+              primaryYAxis: NumericAxis(
+                isVisible: false,
+              ),
+              plotAreaBorderWidth: 0,
+              series: <ColumnSeries<domain.Candle, DateTime>>[
+                ColumnSeries<domain.Candle, DateTime>(
+                  dataSource: sortedCandles,
+                  xValueMapper: (domain.Candle candle, _) => candle.time,
+                  yValueMapper: (domain.Candle candle, _) => candle.volume,
+                  width: 0.9,
+                  spacing: 0.1,
+                  pointColorMapper: (domain.Candle candle, _) =>
+                      candle.close >= candle.open ? Colors.green : Colors.red,
+                )
+              ],
             ),
           ),
         ],

@@ -33,22 +33,14 @@ class Ticker extends Equatable {
 
 class TickerModel extends Ticker {
   const TickerModel({
-    required String symbol,
-    required double lastPrice,
-    required double priceChange,
-    required double priceChangePercent,
-    required double high24h,
-    required double low24h,
-    required double volume24h,
-  }) : super(
-          symbol: symbol,
-          lastPrice: lastPrice,
-          priceChange: priceChange,
-          priceChangePercent: priceChangePercent,
-          high24h: high24h,
-          low24h: low24h,
-          volume24h: volume24h,
-        );
+    required super.symbol,
+    required super.lastPrice,
+    required super.priceChange,
+    required super.priceChangePercent,
+    required super.high24h,
+    required super.low24h,
+    required super.volume24h,
+  });
 
   factory TickerModel.fromWebSocket(Map<String, dynamic> json) {
     return TickerModel(

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:roqqu_task/app/app_color.dart';
 
-//border: 1px solid #262932
 const Color _kPrimaryLightColor = AppColors.primaryColor;
 const Color _kPrimaryDarkColor = Colors.white;
 const Color _kBackgroundDarkColor = Color(0xFF262932);
@@ -61,7 +60,7 @@ ThemeData themeBuilder(
   );
   final OutlineInputBorder textFieldErrorBorder = textFieldBorder.copyWith(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(width: 0.5, color: AppColors.deleteColor));
+      borderSide: const BorderSide(width: 0.5, color: AppColors.textField));
 
   /// FocusedBorder
   final OutlineInputBorder focusedBorder = textFieldBorder.copyWith(
@@ -76,7 +75,7 @@ ThemeData themeBuilder(
   //Style Text textstyle
   final TextTheme textTheme = defaultTheme.textTheme.copyWith(
     bodyMedium: TextStyle(
-        fontSize: 14.sp,
+        fontSize: 12.sp,
         color: isDark ? _kPrimaryDarkColor : _kPrimaryLightColor,
         fontFamily: kAppPrimaryFontFamily,
         fontWeight: FontWeight.normal,
@@ -89,18 +88,16 @@ ThemeData themeBuilder(
         letterSpacing: 0.0),
   );
 
-//Style Card
-  final CardThemeData cardTheme = defaultTheme.cardTheme.copyWith(
-      color: colorScheme.surface,
-      elevation: 1,
-      shadowColor: Colors.grey.shade100);
+  final tabBarTheme = defaultTheme.tabBarTheme.copyWith(
+    dividerColor: Colors.transparent,
+    labelPadding: EdgeInsets.zero,
+    indicatorSize: TabBarIndicatorSize.tab,
+    labelColor: isDark ? Colors.white : AppColors.primaryColor,
+    unselectedLabelColor: Colors.grey,
+    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+    unselectedLabelStyle: const TextStyle(fontSize: 14),
+  );
 
-  //Style Card
-  final DialogThemeData dialogTheme = defaultTheme.dialogTheme.copyWith(
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      elevation: 2,
-      shadowColor: Colors.grey.shade300);
 //Style AppBar
   final AppBarTheme appBarTheme = defaultTheme.appBarTheme.copyWith(
       backgroundColor: Colors.transparent,
@@ -123,19 +120,10 @@ ThemeData themeBuilder(
     elevation: WidgetStateProperty.all(0),
   );
 
-//Style Chip label textstyle
-  final TextStyle? chipTextStyle = textTheme.bodyMedium?.copyWith(
-    fontWeight: FontWeight.w200,
-    fontSize: 13,
-    color: isDark ? Colors.black : _kBackgroundDarkColor,
-  );
-
   return ThemeData(
     useMaterial3: true,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
-    dialogBackgroundColor: Colors.white,
-    dialogTheme: dialogTheme,
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
       foregroundColor: Colors.transparent,
@@ -148,7 +136,6 @@ ThemeData themeBuilder(
       ),
       elevation: 0,
     )),
-    cardTheme: cardTheme,
     appBarTheme: appBarTheme,
     iconTheme: defaultTheme.iconTheme
         .copyWith(size: _kIconSize, color: AppColors.primaryColor),
@@ -166,6 +153,7 @@ ThemeData themeBuilder(
       foregroundColor: colorScheme.onSurface,
     ),
     colorScheme: colorScheme,
+    tabBarTheme: tabBarTheme,
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: hintTextStyle,
       labelStyle: hintTextStyle,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:roqqu_task/app/app_color.dart';
+import 'package:roqqu_task/app/theme/app_theme.dart';
 
 class CustomTabBar extends StatelessWidget {
   final TabController tabController;
@@ -24,15 +26,18 @@ class CustomTabBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color:
+              context.isDark ? AppColors.scaffoldColor : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(borderRadius ?? 7),
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.1),
-              spreadRadius: 2.9,
-              blurRadius: 10,
-              offset: const Offset(0, 0),
-            ),
+            if (!context.isDark) ...[
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.1),
+                spreadRadius: 2.9,
+                blurRadius: 10,
+                offset: const Offset(0, 0),
+              ),
+            ]
           ],
         ),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 5.w, vertical: 5),
@@ -41,33 +46,22 @@ class CustomTabBar extends StatelessWidget {
         child: TabBar(
           isScrollable: false,
           controller: tabController,
-          dividerColor: Colors.transparent,
-          labelColor: Colors.black,
-          labelStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12.sp,
-            color: Colors.white,
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12.sp,
-            color: Colors.black,
-          ),
-          unselectedLabelColor: Colors.black26,
-          labelPadding: EdgeInsets.zero,
           indicatorPadding: EdgeInsets.zero,
-          indicatorSize: TabBarIndicatorSize.tab,
           indicator: BoxDecoration(
             border: Border.all(color: borderColor ?? Colors.white),
             borderRadius: BorderRadius.circular(borderRadius ?? 7),
-            color: Colors.white,
+            color: context.isDark
+                ? AppColors.containerColor.withValues(alpha: 0.7)
+                : Colors.white,
             boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade300,
-                spreadRadius: 0.2,
-                blurRadius: 3,
-                offset: const Offset(0, 0),
-              ),
+              if (!context.isDark) ...[
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.6),
+                  spreadRadius: 0.2,
+                  blurRadius: 3,
+                  offset: const Offset(0, 0),
+                ),
+              ]
             ],
           ),
           tabs: tabs,

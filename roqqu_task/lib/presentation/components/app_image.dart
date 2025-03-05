@@ -4,4 +4,5 @@ class AppImage {
   static const globe = "assets/images/globe.svg";
   static const avatar = "assets/images/avatar.png";
   static const cyptoIcon = "assets/images/cyptoIcon.svg";
+  static const stripeIcon = "assets/images/stripes.svg";
 }

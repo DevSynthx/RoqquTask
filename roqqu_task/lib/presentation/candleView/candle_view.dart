@@ -41,15 +41,19 @@ class _CandleViewState extends ConsumerState<CandleView>
             padding: EdgeInsets.only(left: 10.w, right: 10.w),
             child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: context.isDark
+                      ? AppColors.scaffoldColor
+                      : Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(7),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.1),
-                      spreadRadius: 2.9,
-                      blurRadius: 10,
-                      offset: const Offset(0, 0),
-                    ),
+                    if (!context.isDark) ...[
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.1),
+                        spreadRadius: 2.9,
+                        blurRadius: 10,
+                        offset: const Offset(0, 0),
+                      ),
+                    ]
                   ],
                 ),
                 padding:
@@ -59,30 +63,25 @@ class _CandleViewState extends ConsumerState<CandleView>
                 child: TabBar(
                   isScrollable: false,
                   controller: _tabController,
-                  dividerColor: Colors.transparent,
-                  labelColor: Colors.black,
-                  labelStyle: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12.sp,
-                      color: Colors.white),
                   unselectedLabelStyle: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12.sp,
                       color: Colors.black),
-                  unselectedLabelColor: Colors.black26,
-                  labelPadding: EdgeInsets.zero,
                   indicatorPadding: EdgeInsets.zero,
-                  indicatorSize: TabBarIndicatorSize.tab,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(7),
-                    color: Colors.white,
+                    color: context.isDark
+                        ? AppColors.containerColor.withValues(alpha: 0.7)
+                        : Colors.white,
                     boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.6),
-                        spreadRadius: 0.2,
-                        blurRadius: 3,
-                        offset: const Offset(0, 0),
-                      ),
+                      if (!context.isDark) ...[
+                        BoxShadow(
+                          color: Colors.grey.withValues(alpha: 0.6),
+                          spreadRadius: 0.2,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ]
                     ],
                   ),
                   tabs: const [
@@ -99,7 +98,7 @@ class _CandleViewState extends ConsumerState<CandleView>
                 )),
           ),
           SizedBox(
-            height: size.height * 0.55,
+            height: size.height * 0.60,
             child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
@@ -107,7 +106,7 @@ class _CandleViewState extends ConsumerState<CandleView>
                   CandleChart(),
                   OrderBookScreen(),
                   Container(
-                    color: Colors.red,
+                    color: Colors.green,
                   )
                 ]),
           ),

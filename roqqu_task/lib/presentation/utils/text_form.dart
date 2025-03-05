@@ -40,11 +40,11 @@ class _TextFormInputState extends State<TextFormInput> {
             children: [
               Text(
                 widget.prefix ?? "",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 12),
               ),
               Icon(
                 Icons.info_outlined,
-                size: 15,
+                size: 14,
               )
             ],
           ),
@@ -59,7 +59,7 @@ class _TextFormInputState extends State<TextFormInput> {
             children: [
               Text(
                 widget.suffix ?? "",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 12),
               ),
               if (widget.hasDropdown ?? true) ...[
                 Icon(
@@ -72,7 +72,6 @@ class _TextFormInputState extends State<TextFormInput> {
         ),
       ),
       keyboardType: widget.keyboardType,
-      // onChanged: onChanged,
     );
   }
 }

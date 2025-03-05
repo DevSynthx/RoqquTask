@@ -1,13 +1,10 @@
-// lib/core/utils/candle_data_adapter.dart
 import 'package:candlesticks/candlesticks.dart';
 import 'package:roqqu_task/domain/model/candle_model.dart' as domain;
 
-// Extension method to convert our domain Candle to Candle for the candlesticks package
 extension CandleAdapter on domain.Candle {
   Candle toCandlesticksCandle() {
-    // Pass DateTime directly since that's what the package expects
     return Candle(
-      date: time, // Pass DateTime directly, not milliseconds
+      date: time,
       high: high,
       low: low,
       open: open,
@@ -17,7 +14,7 @@ extension CandleAdapter on domain.Candle {
   }
 }
 
-// Utility function to convert a list of domain Candles to candlesticks Candles
+//------> Utility function to convert a list of domain Candles to candlesticks
 List<Candle> convertToCandlesticksList(List<domain.Candle> candles) {
   return candles.map((candle) => candle.toCandlesticksCandle()).toList();
 }
